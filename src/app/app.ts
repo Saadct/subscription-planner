@@ -6,12 +6,11 @@ import { SubscriptionCalendarComponent } from "./features/subscriptions/componen
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent, SubscriptionCalendarComponent],
+  imports: [RouterOutlet, HeaderComponent],
   template: `
     <app-header></app-header>
     <main class="container mx-auto p-4">
       <router-outlet>
-        <app-subscription-calendar></app-subscription-calendar>
       </router-outlet>
     </main>
   `,
