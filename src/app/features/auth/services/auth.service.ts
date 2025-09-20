@@ -7,7 +7,7 @@ import { User, LoginRequest, RegisterRequest } from '../models/user.model';
 export class AuthService {
     private users = signal<User[]>([
         {
-            id: 1,
+            id: "1",
             email: 'admin@example.com',
             name: 'admin example',
             password: 'admin123', // En production, ce serait hashé
@@ -15,7 +15,7 @@ export class AuthService {
             createdAt: new Date('2024-01-01'),
         },
         {
-            id: 2,
+            id: "2",
             email: 'user@example.com',
             name: 'user example',
             password: 'user123',
@@ -26,6 +26,21 @@ export class AuthService {
 
     private currentUser = signal<User | null>(null);
     private token = signal<string | null>(null);
+
+
+    constructor() {
+        const userId = localStorage.getItem('currentUserId');
+        if (userId) {
+            this.initCurrentUser(userId); // Appel d'une méthode async
+        }
+    }
+
+    private async initCurrentUser(userId: string) {
+        const user = await this.getUserById(userId);
+        if (user) {
+            this.currentUser.set(user);
+        }
+    }
 
     // Simuler un délai réseau
     private delay(ms: number): Promise<void> {
@@ -46,6 +61,7 @@ export class AuthService {
 
         if (user) {
             this.currentUser.set(user);
+            localStorage.setItem("currentUserId", user.id);
             // Générer un token simulé
             const fakeToken = btoa(`${user.email}:${Date.now()}`);
             this.token.set(fakeToken);
@@ -78,7 +94,7 @@ export class AuthService {
         }
 
         const newUser: User = {
-            id: Date.now(),
+            id: crypto.randomUUID(),
             email: userData.email,
             name: userData.name,
             password: userData.password,
@@ -99,6 +115,7 @@ export class AuthService {
         console.log('🔄 Service: Déconnexion...');
         await this.delay(200);
         this.currentUser.set(null);
+        localStorage.removeItem("currentUserId")
         console.log('✅ Service: Déconnexion réussie');
         console.log('🔄 Service: Signal currentUser mis à jour:', this.currentUser());
     }
@@ -109,8 +126,25 @@ export class AuthService {
     }
 
     // GET - Récupérer l'utilisateur actuel
+    // getCurrentUser(): User | null {
+    //     return this.currentUser();
+    // }
     getCurrentUser(): User | null {
-        return this.currentUser();
+        // Vérifie si currentUser est déjà défini
+        if (this.currentUser()) return this.currentUser();
+
+        // Sinon, regarde dans localStorage
+        const userId = localStorage.getItem('currentUserId');
+        if (!userId) return null;
+
+        const user = this.users().find(u => u.id === userId) ?? null;
+        return user;
+    }
+
+
+    async getUserById(id: string): Promise<User | undefined> {
+        await this.delay(200);
+        return this.users().find(sub => sub.id === id);
     }
 
     // GET - Récupérer le token actuel
@@ -141,7 +175,7 @@ export class AuthService {
     }
 
     // DELETE - Supprimer un utilisateur (admin seulement)
-    async deleteUser(userId: number): Promise<{ success: boolean; error?: string }> {
+    async deleteUser(userId: string): Promise<{ success: boolean; error?: string }> {
         console.log('🔄 Service: Suppression de ltilisateur...', userId);
         await this.delay(300);
 

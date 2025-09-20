@@ -6,43 +6,48 @@ import { Subscription, AddSubscription } from '../models/subscription.model';
 })
 export class SubscriptionService {
     private subscriptions = signal<Subscription[]>([
+
         {
-            id: '1',
-            userId: '',
+            id: "1",
+            userId: "1",
             name: 'Netflix',
-            category: 'Divertissement',
+            categoryId: 1, // Divertissement
             price: 15.99,
             paymentDate: new Date('2025-09-25'),
+            createdAt: new Date('2025-09-20'),
             color: '#e50914',
             active: true
         },
         {
-            id: '3',
-            userId: '',
-            name: 'basic fit',
-            category: 'Divertissement',
+            id: "2",
+            userId: "1",
+            name: 'Basic Fit',
+            categoryId: 1, // Divertissement
             price: 35.99,
             paymentDate: new Date('2025-09-25'),
+            createdAt: new Date('2025-09-20'),
             color: '#f1b431ff',
             active: true
         },
         {
-            id: '4',
-            userId: '',
-            name: 'piscine',
-            category: 'Divertissement',
+            id: "3",
+            userId: "1",
+            name: 'Piscine',
+            categoryId: 1, // Divertissement
             price: 25.99,
             paymentDate: new Date('2025-09-25'),
+            createdAt: new Date('2025-09-20'),
             color: '#31b4f1ff',
             active: true
         },
         {
-            id: '2',
-            userId: '',
+            id: "4",
+            userId: "2",
             name: 'Spotify',
-            category: 'Musique',
+            categoryId: 2, // Musique
             price: 9.99,
             paymentDate: new Date('2025-09-21'),
+            createdAt: new Date('2025-09-19'),
             color: '#1DB954',
             active: true
         }
@@ -77,7 +82,8 @@ export class SubscriptionService {
         const newSub: Subscription = {
             id: Date.now().toString(),
             ...data,
-            active: true
+            active: true,
+            createdAt: new Date()
         };
 
         this.subscriptions.update(subs => [...subs, newSub]);
@@ -122,7 +128,7 @@ export class SubscriptionService {
         return this.subscriptions().filter(sub => sub.active);
     }
 
-    getSubscriptionsByCategory(category: Subscription['category']): Subscription[] {
-        return this.subscriptions().filter(sub => sub.category === category);
+    getSubscriptionsByCategory(categoryId: Subscription['categoryId']): Subscription[] {
+        return this.subscriptions().filter(sub => sub.categoryId === categoryId);
     }
 }

@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
+import { adminGuard } from './core/guards/admin.guard';
 
 
 export const routes: Routes = [
@@ -13,10 +15,12 @@ export const routes: Routes = [
   },
   {
     path: 'subscriptions',
+    canActivate: [authGuard], // Protection par authentification
     loadChildren: () => import('./features/subscriptions/subscriptions.routes').then(m => m.SUBSCRIPTION_ROUTES),
   },
-  //   {
-  //     path: 'admin',
-  //     loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES),
-  //   },
+  {
+    path: 'admin',
+    canActivate: [authGuard, adminGuard], // Protection admin
+    loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES),
+  },
 ];

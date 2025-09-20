@@ -13,7 +13,7 @@ import { SubscriptionService } from '../../services/subscription.service';
 
       <div class="flex justify-between items-center mb-4">
         <button (click)="prevMonth()" class="px-3 py-1 bg-gray-200 rounded">← Mois précédent</button>
-        <h3 class="text-xl font-semibold">{{ currentMonthName() }} {{ currentYear() }}</h3>
+        <h3 class="text-sm font-semibold">{{ currentMonthName() }} {{ currentYear() }}</h3>
         <button (click)="nextMonth()" class="px-3 py-1 bg-gray-200 rounded">Mois suivant →</button>
       </div>
 
