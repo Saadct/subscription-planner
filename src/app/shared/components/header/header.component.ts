@@ -15,10 +15,14 @@ import { AuthService } from '../../../features/auth/services/auth.service';
             @if (currentUser()) {
               @if (currentUser()?.role != 'admin') {
                 <li><a routerLink="/subscriptions" class="hover:text-blue-200">Abonnements</a></li>
+                <li><a routerLink="/subscriptions/dashboard" class="hover:text-blue-200">Dashboard</a></li>
+
               }
               @if (currentUser()?.role === 'admin') {
                 <li><a routerLink="/admin" class="hover:text-blue-200">User</a></li>
-                    <li><a routerLink="/admin/category" class="hover:text-blue-200">Category</a></li>
+                <li><a routerLink="/admin/category" class="hover:text-blue-200">Category</a></li>
+                <li><a routerLink="/admin/dashboard" class="hover:text-blue-200">Dashboard</a></li>
+
               }
               <li><button (click)="logout()" class="hover:text-blue-200">Logout</button></li>
             } @else {

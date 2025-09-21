@@ -36,7 +36,7 @@ export class SubscriptionCalendarComponent implements OnInit {
   async loadSubscriptions() {
     this.loading.set(true);
     try {
-      const subs = await this.subscriptionService.getAllSubscriptions();
+      const subs = await this.subscriptionService.getSubscriptionsByUserId(this.userId);
       this.subscriptions.set(subs);
     } finally {
       this.loading.set(false);

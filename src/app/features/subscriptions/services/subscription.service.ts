@@ -70,9 +70,10 @@ export class SubscriptionService {
         return this.subscriptions().find(sub => sub.id === id);
     }
 
-    async getSubscriptionByUserId(userId: string): Promise<Subscription | undefined> {
+    // Dans SubscriptionService
+    async getSubscriptionsByUserId(userId: string): Promise<Subscription[]> {
         await this.delay(200);
-        return this.subscriptions().find(sub => sub.userId === userId);
+        return this.subscriptions().filter(sub => sub.userId === userId);
     }
 
     // POST - créer un nouvel abonnement
