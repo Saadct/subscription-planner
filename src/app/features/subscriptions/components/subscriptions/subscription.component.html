@@ -1,0 +1,74 @@
+<div class="max-w-5xl mx-auto p-4">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-3xl font-bold">Calendrier des abonnements</h2>
+        <button (click)="openAddDrawer()" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">+
+            Ajouter</button>
+    </div>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center mb-4">
+        <button (click)="prevMonth()" class="px-3 py-1 bg-gray-200 rounded">← Mois précédent</button>
+        <h3 class="text-sm font-semibold">{{ currentMonthName() }} {{ currentYear() }}</h3>
+        <button (click)="nextMonth()" class="px-3 py-1 bg-gray-200 rounded">Mois suivant →</button>
+    </div>
+
+    <!-- Calendrier -->
+    <div class="grid grid-cols-7 gap-1">
+        <div *ngFor="let day of weekDays" class="text-center font-semibold py-1">{{ day }}</div>
+        <div *ngFor="let _ of emptyStartDays" class="border h-20"></div>
+
+        <!-- Cases -->
+        <div *ngFor="let day of daysInMonth" class="border h-20 p-1 relative group">
+            <div class="absolute top-1 left-1 text-xs font-semibold">{{ day }}</div>
+
+            <ng-container *ngIf="subscriptionsForDay(day).length > 0">
+
+                <!-- Si 2 ou moins abonnements, affichage direct -->
+                <ng-container *ngIf="subscriptionsForDay(day).length <= 2">
+                    <div *ngFor="let sub of subscriptionsForDay(day)"
+                        [ngStyle]="{ 'background-color': sub.color || '#3b82f6' }"
+                        class="flex justify-between text-white text-xs rounded px-1 py-0.5 mt-4 block truncate cursor-pointer"
+                        (click)="openEditDrawer(sub)">
+                        {{ sub.name }}
+
+                        <span class="text-white hover:text-red-500" (click)="confirmDelete(sub, $event)">✖</span>
+
+                    </div>
+                </ng-container>
+
+                <!-- Si plus de 2 abonnements, afficher +N et tooltip détaillé -->
+                <ng-container *ngIf="subscriptionsForDay(day).length > 2">
+                    <div class="flex justify-center items-center h-full cursor-pointer">
+                        <div class="text-white text-lg rounded px-2 py-1 bg-gray-700">+{{
+                            subscriptionsForDay(day).length }}</div>
+                    </div>
+
+                    <!-- Tooltip avec tous les abonnements cliquables -->
+                    <div
+                        class="absolute z-20 hidden group-hover:block bg-gray-800 text-white text-xs p-2 rounded shadow-lg top-full left-0 mt-1 w-48">
+                        <div *ngFor="let sub of subscriptionsForDay(day)"
+                            class="flex justify-between cursor-pointer hover:bg-gray-700 px-1 py-0.5 rounded"
+                            (click)="openEditDrawer(sub)">
+                            {{ sub.name }} - {{ sub.price }}€
+
+                            <span class="text-white hover:text-red-500" (click)="confirmDelete(sub, $event)">✖</span>
+
+                        </div>
+                    </div>
+
+
+                </ng-container>
+
+            </ng-container>
+        </div>
+
+    </div>
+</div>
+
+<!-- Drawers séparés -->
+<app-subscription-add [open]="addDrawerOpen" (close)="closeAddDrawer()" (save)="saveNewSubscription($event)">
+</app-subscription-add>
+
+<app-subscription-edit [open]="editDrawerOpen" [initialData]="selectedSubscription" (close)="closeEditDrawer()"
+    (update)="updateSubscription($event)">
+</app-subscription-edit>

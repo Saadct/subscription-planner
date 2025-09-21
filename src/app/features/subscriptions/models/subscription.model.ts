@@ -18,3 +18,14 @@ export interface AddSubscription {
     paymentDate: Date;
     color?: string;
 }
+
+export interface UpdateSubscription {
+    id: string;
+    userId: string;                     // id de l'utilisateur propriétaire
+    name: string;
+    categoryId: number;
+    price: number;
+    paymentDate: Date;
+    color?: string;
+    active: boolean;
+}

@@ -25,7 +25,7 @@ export class SubscriptionService {
             categoryId: 1, // Divertissement
             price: 35.99,
             paymentDate: new Date('2025-09-25'),
-            createdAt: new Date('2025-09-20'),
+            createdAt: new Date('2025-09-26'),
             color: '#f1b431ff',
             active: true
         },
@@ -78,7 +78,7 @@ export class SubscriptionService {
     // POST - créer un nouvel abonnement
     async createSubscription(data: AddSubscription): Promise<Subscription> {
         await this.delay(400);
-
+        console.log("service", data);
         const newSub: Subscription = {
             id: Date.now().toString(),
             ...data,
@@ -87,6 +87,8 @@ export class SubscriptionService {
         };
 
         this.subscriptions.update(subs => [...subs, newSub]);
+        console.log(this.subscriptions);
+
         return newSub;
     }
 

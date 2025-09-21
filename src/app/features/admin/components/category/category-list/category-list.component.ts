@@ -1,22 +1,19 @@
-// src/app/features/admin/components/category-list.component.ts
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../../auth/services/auth.service';
 import { CategoryService } from '../../../services/category.service';
 import { Category } from '../../../models/category.model';
-import { FormsModule } from '@angular/forms';
+import { CategoryEditComponent } from '../category-edit/category-edit.component';
 
 @Component({
   selector: 'app-category-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CategoryEditComponent],
   template: `
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">Gestion des Catégories</h1>
-        <p class="text-gray-600 mt-2">Créez, modifiez et supprimez les catégories</p>
-      </div>
+      <h1 class="text-3xl font-bold mb-4">Gestion des Catégories</h1>
 
       <!-- Formulaire de création -->
       <div class="mb-6">
@@ -34,32 +31,26 @@ import { FormsModule } from '@angular/forms';
         </button>
       </div>
 
-      <!-- Liste des catégories -->
+      <!-- Liste -->
       @if (categories().length > 0) {
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Nom
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actif
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
+              <th class="px-6 py-3 text-left">Nom</th>
+              <th class="px-6 py-3 text-left">Actif</th>
+              <th class="px-6 py-3 text-left">Actions</th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody>
             @for (cat of categories(); track cat.id) {
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap">{{ cat.label }}</td>
-                <td class="px-6 py-4 whitespace-nowrap">{{ cat.active ? 'Oui' : 'Non' }}</td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <button
-                    (click)="deleteCategory(cat.id)"
-                    class="text-red-600 hover:text-red-900"
-                  >
+               <tr [class.bg-gray-100]="!cat.active" [class.text-gray-400]="!cat.active">
+                <td class="px-6 py-4">{{ cat.label }}</td>
+                <td class="px-6 py-4">{{ cat.active ? 'Oui' : 'Non' }}</td>
+                <td class="px-6 py-4 flex gap-2">
+                  <button (click)="openEdit(cat)" class="text-blue-600 hover:text-blue-900">
+                    Modifier
+                  </button>
+                  <button (click)="deleteCategory(cat.id)" class="text-red-600 hover:text-red-900">
                     Supprimer
                   </button>
                 </td>
@@ -71,6 +62,14 @@ import { FormsModule } from '@angular/forms';
         <p class="text-gray-500 text-center py-8">Aucune catégorie trouvée</p>
       }
     </div>
+
+    <!-- Drawer d'édition -->
+    <app-category-edit
+      [open]="drawerOpen"
+      [category]="selectedCategory"
+      (close)="closeDrawer()"
+      (save)="updateCategory($event)"
+    ></app-category-edit>
   `,
 })
 export class CategoryListComponent implements OnInit {
@@ -80,20 +79,20 @@ export class CategoryListComponent implements OnInit {
 
   categories = signal<Category[]>([]);
   newCategoryLabel = '';
+  drawerOpen = false;
+  selectedCategory: Category | null = null;
 
   async ngOnInit() {
     const currentUser = await this.authService.getCurrentUser();
     if (!currentUser || currentUser.role !== 'admin') {
-      this.router.navigate(['/todos']); // redirige si non admin
+      this.router.navigate(['/auth']);
       return;
     }
-
     await this.loadCategories();
   }
 
   async loadCategories() {
-    const cats = await this.categoryService.getAllCategories();
-    this.categories.set(cats);
+    this.categories.set(await this.categoryService.getAllCategories());
   }
 
   async createCategory() {
@@ -108,5 +107,19 @@ export class CategoryListComponent implements OnInit {
       await this.categoryService.deleteCategory(categoryId);
       await this.loadCategories();
     }
+  }
+
+  openEdit(cat: Category) {
+    this.selectedCategory = cat;
+    this.drawerOpen = true;
+  }
+
+  closeDrawer() {
+    this.drawerOpen = false;
+  }
+
+  async updateCategory(updated: Category) {
+    await this.categoryService.updateCategory(updated.id, updated);
+    await this.loadCategories();
   }
 }
