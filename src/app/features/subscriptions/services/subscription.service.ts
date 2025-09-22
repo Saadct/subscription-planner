@@ -82,6 +82,7 @@ export class SubscriptionService {
     getSubscriptionsByUserId(userId: string) {
         return computed(() => this.subscriptions().filter(sub => sub.userId === userId));
     }
+
     // POST - créer un nouvel abonnement
     async createSubscription(data: AddSubscription): Promise<Subscription> {
         await this.delay(400);

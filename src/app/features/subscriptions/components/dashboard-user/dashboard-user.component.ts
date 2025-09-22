@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, computed, OnInit, Signal } from '@angular/core';
 import { Subscription } from '../../../subscriptions/models/subscription.model';
 import { SubscriptionService } from '../../../subscriptions/services/subscription.service';
 import { CommonModule } from '@angular/common';
@@ -23,11 +23,11 @@ import { EChartsOption } from 'echarts';
     styleUrls: ['./dashboard-user.component.css']
 })
 export class DashboardUserComponent implements OnInit {
-    subscriptions: Subscription[] = [];
+    subscriptions!: Signal<Subscription[]>;
     categories: Category[] = [];
 
     totalSubscriptions = 0;
-    totalCost = 0;
+    totalCost!: Signal<number>;
 
     // Options pour ngx-echarts
     subscriptionsByCategoryOptions: EChartsOption = {};
@@ -41,19 +41,26 @@ export class DashboardUserComponent implements OnInit {
 
     async ngOnInit() {
         const userId = localStorage.getItem("currentUserId") || "";
-        // this.subscriptions = await this.subscriptionService.getSubscriptionsByUserId(userId);
+        this.subscriptions = this.subscriptionService.getSubscriptionsByUserId(userId);
         this.categories = await this.categoryService.getAllCategories();
+
+        // ✅ totalCost calculé automatiquement quand subscriptions change
+        this.totalCost = computed(() =>
+            this.subscriptions().reduce((acc, sub) => acc + sub.price, 0)
+        );
 
         this.buildChartsData();
     }
 
     buildChartsData() {
-        this.totalSubscriptions = this.subscriptions.length;
-        this.totalCost = this.subscriptions.reduce((acc, sub) => acc + sub.price, 0);
+        const subs = this.subscriptions(); // ✅ on récupère la valeur du signal
+
+        // --- Nombre total
+        this.totalSubscriptions = subs.length;
 
         // --- Abonnements par catégorie
         const counts: { [key: string]: number } = {};
-        this.subscriptions.forEach(sub => {
+        subs.forEach(sub => {
             const category = this.categories.find(c => c.id === sub.categoryId.toString());
             if (category) counts[category.label] = (counts[category.label] || 0) + 1;
         });
@@ -76,7 +83,7 @@ export class DashboardUserComponent implements OnInit {
 
         // --- Coût par catégorie
         const costs: { [key: string]: number } = {};
-        this.subscriptions.forEach(sub => {
+        subs.forEach(sub => {
             const category = this.categories.find(c => c.id === sub.categoryId.toString());
             if (category) costs[category.label] = (costs[category.label] || 0) + sub.price;
         });
@@ -89,18 +96,17 @@ export class DashboardUserComponent implements OnInit {
             series: [
                 {
                     name: 'Coût',
-                    type: 'pie',             // ✅ utiliser 'pie'
-                    radius: ['40%', '70%'],  // pour doughnut
+                    type: 'pie',
+                    radius: ['40%', '70%'], // doughnut
                     data: costLabels.map((label, i) => ({ value: costData[i], name: label })),
                     emphasis: { itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0,0,0,0.5)' } }
                 }
             ]
         };
 
-
         // --- Timeline par mois
         const monthlyCounts: { [key: string]: number } = {};
-        this.subscriptions.forEach(sub => {
+        subs.forEach(sub => {
             const month = sub.createdAt.toLocaleString('default', { month: 'short', year: 'numeric' });
             monthlyCounts[month] = (monthlyCounts[month] || 0) + 1;
         });

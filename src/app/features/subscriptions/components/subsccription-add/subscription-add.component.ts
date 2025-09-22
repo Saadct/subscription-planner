@@ -22,12 +22,23 @@ import { PositivePriceDirective } from '../../../../shared/directives/positive-p
 
         <form [formGroup]="subscriptionForm" (ngSubmit)="onSave()" class="flex-1 flex flex-col gap-3 py-4">
           <input type="text" formControlName="name" placeholder="Nom de l'abonnement" class="border px-2 py-1 rounded" />
+            <div *ngIf="subscriptionForm.get('name')?.touched && subscriptionForm.get('name')?.hasError('required')" class="text-red-500 text-sm">
+    Le nom est obligatoire
+  </div>
+
           <input type="number" formControlName="price" appPositivePrice placeholder="Prix (€)" class="border px-2 py-1 rounded" />
           <input type="date" formControlName="paymentDate" class="border px-2 py-1 rounded" />
+            <div *ngIf="subscriptionForm.get('paymentDate')?.touched && subscriptionForm.get('paymentDate')?.hasError('required')" class="text-red-500 text-sm">
+      La date doit être choisie
+  </div>
           <select formControlName="categoryId" class="border px-2 py-1 rounded">
             <option value="" disabled>Choisir une catégorie</option>
             <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.label }}</option>
           </select>
+            <div *ngIf="subscriptionForm.get('categoryId')?.touched && subscriptionForm.get('categoryId')?.hasError('required')" class="text-red-500 text-sm">
+    ⚠️ La catégorie doit être sélectionnée
+  </div>
+
           <input type="color" formControlName="color" class="w-12 h-10 border rounded" />
           <div class="mt-auto flex justify-end gap-2">
             <button type="button" (click)="onClose()" class="px-3 py-1 border rounded">Annuler</button>
