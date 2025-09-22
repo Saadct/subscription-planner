@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { AddCategory, Category } from '../models/category.model';
 
 @Injectable({
@@ -18,7 +18,10 @@ export class CategoryService {
         { id: "10", label: 'Santé & Bien-être', active: true } // Méditation, Yoga
     ]);
 
-
+    allCategories = computed(() => this.categories());
+    getCategoriesComputed() {
+        return computed(() => this.categories());
+    }
     // Simuler un délai réseau
     private delay(ms: number): Promise<void> {
         return new Promise(resolve => setTimeout(resolve, ms));

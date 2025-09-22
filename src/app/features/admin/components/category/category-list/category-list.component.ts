@@ -77,7 +77,9 @@ export class CategoryListComponent implements OnInit {
   private categoryService = inject(CategoryService);
   private router = inject(Router);
 
-  categories = signal<Category[]>([]);
+  //categories = signal<Category[]>([]);
+  categories = this.categoryService.getCategoriesComputed();
+
   newCategoryLabel = '';
   drawerOpen = false;
   selectedCategory: Category | null = null;
@@ -88,24 +90,24 @@ export class CategoryListComponent implements OnInit {
       this.router.navigate(['/auth']);
       return;
     }
-    await this.loadCategories();
+    // await this.loadCategories();
   }
 
-  async loadCategories() {
-    this.categories.set(await this.categoryService.getAllCategories());
-  }
+  // async loadCategories() {
+  //   this.categories.set(await this.categoryService.getAllCategories());
+  // }
 
   async createCategory() {
     if (!this.newCategoryLabel.trim()) return;
     await this.categoryService.createCategory({ label: this.newCategoryLabel });
     this.newCategoryLabel = '';
-    await this.loadCategories();
+    // await this.loadCategories();
   }
 
   async deleteCategory(categoryId: string) {
     if (confirm('Supprimer cette catégorie ?')) {
       await this.categoryService.deleteCategory(categoryId);
-      await this.loadCategories();
+      // await this.loadCategories();
     }
   }
 
@@ -120,6 +122,6 @@ export class CategoryListComponent implements OnInit {
 
   async updateCategory(updated: Category) {
     await this.categoryService.updateCategory(updated.id, updated);
-    await this.loadCategories();
+    // await this.loadCategories();
   }
 }
