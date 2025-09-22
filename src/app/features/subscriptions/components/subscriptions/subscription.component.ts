@@ -4,11 +4,12 @@ import { AddSubscription, Subscription, UpdateSubscription } from '../../models/
 import { SubscriptionService } from '../../services/subscription.service';
 import { SubscriptionAddComponent } from '../subsccription-add/subscription-add.component';
 import { SubscriptionEditComponent } from '../subscription-edit/subscription-edit.component';
+import { PriceEuroPipe } from "../../../../shared/pipes/price/price.pipe";
 
 @Component({
   selector: 'app-subscription-calendar',
   standalone: true,
-  imports: [CommonModule, SubscriptionAddComponent, SubscriptionEditComponent],
+  imports: [CommonModule, SubscriptionAddComponent, SubscriptionEditComponent, PriceEuroPipe],
   templateUrl: './subscription.component.html',
   styleUrls: ['./subscription.component.css'],
 })

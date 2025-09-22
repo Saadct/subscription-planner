@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { effect, Injectable, signal } from '@angular/core';
 import { User, LoginRequest, RegisterRequest } from '../models/user.model';
 
 @Injectable({
@@ -28,11 +28,27 @@ export class AuthService {
     private token = signal<string | null>(null);
 
 
+
     constructor() {
         const userId = localStorage.getItem('currentUserId');
         if (userId) {
             this.initCurrentUser(userId); // Appel d'une méthode async
         }
+
+        // Déclaré dans ton service ou ton composant
+        effect(() => {
+            const user = this.currentUser();
+            if (user) {
+                // Sauvegarde l'ID de l'utilisateur connecté
+                localStorage.setItem("currentUserId", user.id);
+                console.log(`✅ LocalStorage mis à jour: currentUserId = ${user.id}`);
+            } else {
+                // Si l'utilisateur se déconnecte
+                localStorage.removeItem("currentUserId");
+                console.log(`ℹ️ LocalStorage vidé: aucun utilisateur connecté`);
+            }
+        });
+
     }
 
     private async initCurrentUser(userId: string) {
@@ -61,12 +77,12 @@ export class AuthService {
 
         if (user) {
             this.currentUser.set(user);
-            localStorage.setItem("currentUserId", user.id);
+            // localStorage.setItem("currentUserId", user.id);
             // Générer un token simulé
             const fakeToken = btoa(`${user.email}:${Date.now()}`);
             this.token.set(fakeToken);
-            console.log('✅ Service: Connexion réussie pour:', user.email);
-            console.log('🔄 Service: Signal currentUser mis à jour:', this.currentUser());
+            // console.log('✅ Service: Connexion réussie pour:', user.email);
+            // console.log('🔄 Service: Signal currentUser mis à jour:', this.currentUser());
             return { success: true, user };
         } else {
             console.log('❌ Service: Échec de connexion pour:', credentials.email);
@@ -115,7 +131,7 @@ export class AuthService {
         console.log('🔄 Service: Déconnexion...');
         await this.delay(200);
         this.currentUser.set(null);
-        localStorage.removeItem("currentUserId")
+        // localStorage.removeItem("currentUserId")
         console.log('✅ Service: Déconnexion réussie');
         console.log('🔄 Service: Signal currentUser mis à jour:', this.currentUser());
     }
