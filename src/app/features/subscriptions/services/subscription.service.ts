@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { Subscription, AddSubscription } from '../models/subscription.model';
 
 @Injectable({
@@ -53,6 +53,9 @@ export class SubscriptionService {
         }
     ]);
 
+    readonly activeSubscriptions = computed(() =>
+        this.subscriptions().filter(sub => sub.active)
+    );
     // Simuler un délai réseau
     private delay(ms: number): Promise<void> {
         return new Promise(resolve => setTimeout(resolve, ms));
@@ -70,12 +73,15 @@ export class SubscriptionService {
         return this.subscriptions().find(sub => sub.id === id);
     }
 
-    // Dans SubscriptionService
-    async getSubscriptionsByUserId(userId: string): Promise<Subscription[]> {
-        await this.delay(200);
-        return this.subscriptions().filter(sub => sub.userId === userId);
-    }
+    // // Dans SubscriptionService
+    // async getSubscriptionsByUserId(userId: string): Promise<Subscription[]> {
+    //     await this.delay(200);
+    //     return this.subscriptions().filter(sub => sub.userId === userId);
+    // }
 
+    getSubscriptionsByUserId(userId: string) {
+        return computed(() => this.subscriptions().filter(sub => sub.userId === userId));
+    }
     // POST - créer un nouvel abonnement
     async createSubscription(data: AddSubscription): Promise<Subscription> {
         await this.delay(400);

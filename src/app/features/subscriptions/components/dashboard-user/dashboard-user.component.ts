@@ -41,7 +41,7 @@ export class DashboardUserComponent implements OnInit {
 
     async ngOnInit() {
         const userId = localStorage.getItem("currentUserId") || "";
-        this.subscriptions = await this.subscriptionService.getSubscriptionsByUserId(userId);
+        // this.subscriptions = await this.subscriptionService.getSubscriptionsByUserId(userId);
         this.categories = await this.categoryService.getAllCategories();
 
         this.buildChartsData();

@@ -1,4 +1,4 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AddSubscription, Subscription, UpdateSubscription } from '../../models/subscription.model';
 import { SubscriptionService } from '../../services/subscription.service';
@@ -13,7 +13,11 @@ import { SubscriptionEditComponent } from '../subscription-edit/subscription-edi
   styleUrls: ['./subscription.component.css'],
 })
 export class SubscriptionCalendarComponent implements OnInit {
-  subscriptions = signal<Subscription[]>([]);
+  // subscriptions = signal<Subscription[]>([]);
+  // signal pour filtrer les abonnements
+  subscriptions = computed(() =>
+    this.subscriptionService.getSubscriptionsByUserId(this.userId)()
+  );
   loading = signal(true);
   userId: string = "";
 
@@ -30,18 +34,19 @@ export class SubscriptionCalendarComponent implements OnInit {
 
   async ngOnInit() {
     this.userId = localStorage.getItem("currentUserId") || "";
-    await this.loadSubscriptions();
+
+    // await this.loadSubscriptions();
   }
 
-  async loadSubscriptions() {
-    this.loading.set(true);
-    try {
-      const subs = await this.subscriptionService.getSubscriptionsByUserId(this.userId);
-      this.subscriptions.set(subs);
-    } finally {
-      this.loading.set(false);
-    }
-  }
+  // async loadSubscriptions() {
+  //   this.loading.set(true);
+  //   try {
+  //     const subs = await this.subscriptionService.getSubscriptionsByUserId(this.userId);
+  //     this.subscriptions.set(subs);
+  //   } finally {
+  //     this.loading.set(false);
+  //   }
+  // }
 
   // Création d'un nouvel abonnement
   async saveNewSubscription(data: AddSubscription) {
@@ -50,7 +55,7 @@ export class SubscriptionCalendarComponent implements OnInit {
       paymentDate: new Date(data.paymentDate),
       userId: this.userId
     });
-    await this.loadSubscriptions();
+    // await this.loadSubscriptions();
     this.closeAddDrawer();
   }
 
@@ -61,7 +66,7 @@ export class SubscriptionCalendarComponent implements OnInit {
       paymentDate: new Date(data.paymentDate),
       userId: this.userId
     });
-    await this.loadSubscriptions();
+    // await this.loadSubscriptions();
     this.closeEditDrawer();
   }
 
@@ -72,7 +77,7 @@ export class SubscriptionCalendarComponent implements OnInit {
     if (!confirmed) return;
 
     await this.subscriptionService.deleteSubscription(subscription.id);
-    await this.loadSubscriptions();
+    // await this.loadSubscriptions();
   }
 
 
