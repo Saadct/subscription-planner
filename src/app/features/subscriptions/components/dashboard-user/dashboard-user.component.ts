@@ -44,7 +44,6 @@ export class DashboardUserComponent implements OnInit {
         this.subscriptions = this.subscriptionService.getSubscriptionsByUserId(userId);
         this.categories = await this.categoryService.getAllCategories();
 
-        // ✅ totalCost calculé automatiquement quand subscriptions change
         this.totalCost = computed(() =>
             this.subscriptions().reduce((acc, sub) => acc + sub.price, 0)
         );
@@ -53,7 +52,7 @@ export class DashboardUserComponent implements OnInit {
     }
 
     buildChartsData() {
-        const subs = this.subscriptions(); // ✅ on récupère la valeur du signal
+        const subs = this.subscriptions();
 
         // --- Nombre total
         this.totalSubscriptions = subs.length;

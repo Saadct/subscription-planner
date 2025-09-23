@@ -14,18 +14,15 @@ import { PriceEuroPipe } from "../../../../shared/pipes/price/price.pipe";
   styleUrls: ['./subscription.component.css'],
 })
 export class SubscriptionCalendarComponent implements OnInit {
-  // subscriptions = signal<Subscription[]>([]);
-  // signal pour filtrer les abonnements
   subscriptions = computed(() =>
     this.subscriptionService.getSubscriptionsByUserId(this.userId)()
   );
   loading = signal(true);
   userId: string = "";
 
-  // Drawers
   addDrawerOpen = false;
   editDrawerOpen = false;
-  selectedSubscription: Subscription | null = null; // abonnement sélectionné pour édition
+  selectedSubscription: Subscription | null = null;
 
   month = signal(new Date().getMonth());
   year = signal(new Date().getFullYear());
@@ -35,54 +32,34 @@ export class SubscriptionCalendarComponent implements OnInit {
 
   async ngOnInit() {
     this.userId = localStorage.getItem("currentUserId") || "";
-
-    // await this.loadSubscriptions();
   }
 
-  // async loadSubscriptions() {
-  //   this.loading.set(true);
-  //   try {
-  //     const subs = await this.subscriptionService.getSubscriptionsByUserId(this.userId);
-  //     this.subscriptions.set(subs);
-  //   } finally {
-  //     this.loading.set(false);
-  //   }
-  // }
-
-  // Création d'un nouvel abonnement
   async saveNewSubscription(data: AddSubscription) {
     await this.subscriptionService.createSubscription({
       ...data,
       paymentDate: new Date(data.paymentDate),
       userId: this.userId
     });
-    // await this.loadSubscriptions();
     this.closeAddDrawer();
   }
 
-  // Mise à jour d'un abonnement existant
   async updateSubscription(data: UpdateSubscription) {
     await this.subscriptionService.updateSubscription(data.id, {
       ...data,
       paymentDate: new Date(data.paymentDate),
       userId: this.userId
     });
-    // await this.loadSubscriptions();
     this.closeEditDrawer();
   }
 
-  // Supprimer un abonnement avec confirmation
   async confirmDelete(subscription: Subscription, event: Event) {
-    event.stopPropagation(); // Empêche de déclencher le drawer en même temps
+    event.stopPropagation();
     const confirmed = confirm(`Voulez-vous vraiment supprimer l'abonnement "${subscription.name}" ?`);
     if (!confirmed) return;
 
     await this.subscriptionService.deleteSubscription(subscription.id);
-    // await this.loadSubscriptions();
   }
 
-
-  // Ouvrir drawer création
   openAddDrawer() {
     this.addDrawerOpen = true;
   }
@@ -91,7 +68,6 @@ export class SubscriptionCalendarComponent implements OnInit {
     this.addDrawerOpen = false;
   }
 
-  // Ouvrir drawer édition
   openEditDrawer(subscription: Subscription) {
     this.selectedSubscription = subscription;
     this.editDrawerOpen = true;
@@ -102,7 +78,6 @@ export class SubscriptionCalendarComponent implements OnInit {
     this.selectedSubscription = null;
   }
 
-  // Calendrier
   get daysInMonth() {
     const date = new Date(this.year(), this.month() + 1, 0);
     return Array.from({ length: date.getDate() }, (_, i) => i + 1);

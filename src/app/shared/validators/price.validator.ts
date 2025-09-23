@@ -1,6 +1,5 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
-// Validator custom pour vérifier que le prix est > 0
 export function positivePriceValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
         const value = control.value;

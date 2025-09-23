@@ -50,7 +50,7 @@ import { PositivePriceDirective } from '../../../../shared/directives/positive-p
   `
 })
 export class SubscriptionAddComponent implements OnInit {
-  @Input() open = false; // ← Ajouté ici
+  @Input() open = false;
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<AddSubscription>();
 

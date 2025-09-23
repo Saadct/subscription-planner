@@ -1,4 +1,3 @@
-// src/app/features/admin/components/admin.component.ts
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -28,15 +27,6 @@ import { User } from '../../../auth/models/user.model';
           >
             Utilisateurs
           </button>
-          <!-- <button
-            (click)="activeTab.set('tickets')"
-            [class.bg-blue-600]="activeTab() === 'tickets'"
-            [class.text-white]="activeTab() === 'tickets'"
-            [class.text-gray-700]="activeTab() !== 'tickets'"
-            class="px-4 py-2 rounded-md font-medium hover:bg-blue-700 hover:text-white transition-colors"
-          >
-            Tickets
-          </button> -->
         </nav>
       </div>
 
@@ -123,131 +113,23 @@ import { User } from '../../../auth/models/user.model';
           </div>
         </div>
       }
-
-      <!-- @if (activeTab() === 'tickets') {
-        <div class="bg-white shadow rounded-lg">
-          <div class="px-6 py-4 border-b border-gray-200">
-            <h2 class="text-xl font-semibold text-gray-900">Gestion des Tickets</h2>
-          </div>
-          <div class="p-6">
-            @if (todos().length > 0) {
-              <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                  <thead class="bg-gray-50">
-                    <tr>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Ticket
-                      </th>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Statut
-                      </th>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Priorité
-                      </th>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Assigné à
-                      </th>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody class="bg-white divide-y divide-gray-200">
-                    @for (todo of todos(); track todo.id) {
-                      <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                          <div class="text-sm font-medium text-gray-900">{{ todo.title }}</div>
-                          @if (todo.description) {
-                            <div class="text-sm text-gray-500">{{ todo.description }}</div>
-                          }
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                          <span
-                            [class.bg-yellow-100]="todo.status === 'todo'"
-                            [class.text-yellow-800]="todo.status === 'todo'"
-                            [class.bg-blue-100]="todo.status === 'in-progress'"
-                            [class.text-blue-800]="todo.status === 'in-progress'"
-                            [class.bg-green-100]="todo.status === 'done'"
-                            [class.text-green-800]="todo.status === 'done'"
-                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                          >
-                            {{ todo.status | titlecase }}
-                          </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                          <span
-                            [class.bg-red-100]="todo.priority === 'high'"
-                            [class.text-red-800]="todo.priority === 'high'"
-                            [class.bg-yellow-100]="todo.priority === 'medium'"
-                            [class.text-yellow-800]="todo.priority === 'medium'"
-                            [class.bg-green-100]="todo.priority === 'low'"
-                            [class.text-green-800]="todo.priority === 'low'"
-                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                          >
-                            {{ todo.priority | titlecase }}
-                          </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {{ todo.assignedTo || 'Non assigné' }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <button
-                            (click)="deleteTodo(todo.id)"
-                            class="text-red-600 hover:text-red-900 mr-3"
-                          >
-                            Supprimer
-                          </button>
-                          <button
-                            (click)="assignTodo(todo)"
-                            class="text-blue-600 hover:text-blue-900"
-                          >
-                            Assigner
-                          </button>
-                        </td>
-                      </tr>
-                    }
-                  </tbody>
-                </table>
-              </div>
-            } @else {
-              <p class="text-gray-500 text-center py-8">Aucun ticket trouvé</p>
-            }
-          </div>
-        </div>
-      } -->
     </div>
   `,
 })
 export class UserListComponent implements OnInit {
   private authService = inject(AuthService);
-  // private todoService = inject(TodoService);
   private router = inject(Router);
 
-  activeTab = signal<'users' | 'tickets'>('users');
+  activeTab = signal<'users'>('users');
   users = signal<User[]>([]);
-  // todos = signal<Todo[]>([]);
 
   async ngOnInit() {
-    // Vérifier que l'utilisateur est admin
     const currentUser = await this.authService.getCurrentUser();
     if (!currentUser || currentUser.role !== 'admin') {
-      this.router.navigate(['/todos']);
+      this.router.navigate(['/subscriptions']);
       return;
     }
-
-    // Charger les données
     await this.loadUsers();
-    await this.loadTodos();
   }
 
   async loadUsers() {
@@ -257,15 +139,6 @@ export class UserListComponent implements OnInit {
     } catch (error) {
       console.error('Erreur lors du chargement des utilisateurs:', error);
     }
-  }
-
-  async loadTodos() {
-    // try {
-    //     const todos = await this.todoService.getAllTodos();
-    //     this.todos.set(todos);
-    // } catch (error) {
-    //     console.error('Erreur lors du chargement des todos:', error);
-    // }
   }
 
   async deleteUser(userId: string) {
@@ -278,20 +151,4 @@ export class UserListComponent implements OnInit {
       }
     }
   }
-
-  async deleteTodo(todoId: number) {
-    // if (confirm('Êtes-vous sûr de vouloir supprimer ce ticket ?')) {
-    //     try {
-    //         await this.todoService.deleteTodo(todoId);
-    //         await this.loadTodos();
-    //     } catch (error) {
-    //         console.error('Erreur lors de la suppression:', error);
-    //     }
-    // }
-  }
-
-  // assignTodo(todo: Todo) {
-  //     // TODO: Implémenter la logique d'assignation
-  //     console.log('Assigner le ticket:', todo);
-  // }
 }

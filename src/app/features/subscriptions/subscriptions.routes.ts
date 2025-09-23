@@ -5,7 +5,4 @@ import { DashboardUserComponent } from './components/dashboard-user/dashboard-us
 export const SUBSCRIPTION_ROUTES: Routes = [
     { path: '', component: SubscriptionCalendarComponent },
     { path: 'dashboard', component: DashboardUserComponent },
-
-
-
 ];

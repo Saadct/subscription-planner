@@ -11,7 +11,7 @@ export class SubscriptionService {
             id: "1",
             userId: "1",
             name: 'Netflix',
-            categoryId: 1, // Divertissement
+            categoryId: 1,
             price: 15.99,
             paymentDate: new Date('2025-09-25'),
             createdAt: new Date('2025-09-20'),
@@ -22,7 +22,7 @@ export class SubscriptionService {
             id: "2",
             userId: "1",
             name: 'Basic Fit',
-            categoryId: 1, // Divertissement
+            categoryId: 1,
             price: 35.99,
             paymentDate: new Date('2025-09-25'),
             createdAt: new Date('2025-09-26'),
@@ -33,7 +33,7 @@ export class SubscriptionService {
             id: "3",
             userId: "1",
             name: 'Piscine',
-            categoryId: 1, // Divertissement
+            categoryId: 1,
             price: 25.99,
             paymentDate: new Date('2025-09-25'),
             createdAt: new Date('2025-09-20'),
@@ -44,7 +44,7 @@ export class SubscriptionService {
             id: "4",
             userId: "2",
             name: 'Spotify',
-            categoryId: 2, // Musique
+            categoryId: 2,
             price: 9.99,
             paymentDate: new Date('2025-09-21'),
             createdAt: new Date('2025-09-19'),
@@ -56,34 +56,25 @@ export class SubscriptionService {
     readonly activeSubscriptions = computed(() =>
         this.subscriptions().filter(sub => sub.active)
     );
-    // Simuler un délai réseau
+
     private delay(ms: number): Promise<void> {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    // GET - tous les abonnements
     async getAllSubscriptions(): Promise<Subscription[]> {
         await this.delay(300);
         return this.subscriptions();
     }
 
-    // GET - abonnement par ID
     async getSubscriptionById(id: string): Promise<Subscription | undefined> {
         await this.delay(200);
         return this.subscriptions().find(sub => sub.id === id);
     }
 
-    // // Dans SubscriptionService
-    // async getSubscriptionsByUserId(userId: string): Promise<Subscription[]> {
-    //     await this.delay(200);
-    //     return this.subscriptions().filter(sub => sub.userId === userId);
-    // }
-
     getSubscriptionsByUserId(userId: string) {
         return computed(() => this.subscriptions().filter(sub => sub.userId === userId));
     }
 
-    // POST - créer un nouvel abonnement
     async createSubscription(data: AddSubscription): Promise<Subscription> {
         await this.delay(400);
         console.log("service", data);
@@ -100,7 +91,6 @@ export class SubscriptionService {
         return newSub;
     }
 
-    // PUT - mettre à jour un abonnement
     async updateSubscription(id: string, updates: Partial<Subscription>): Promise<Subscription | undefined> {
         await this.delay(300);
 
@@ -118,7 +108,6 @@ export class SubscriptionService {
         return updatedSub;
     }
 
-    // DELETE - supprimer un abonnement
     async deleteSubscription(id: string): Promise<boolean> {
         await this.delay(250);
 
@@ -133,7 +122,6 @@ export class SubscriptionService {
         return deleted;
     }
 
-    // Méthodes utilitaires
     getActiveSubscriptions(): Subscription[] {
         return this.subscriptions().filter(sub => sub.active);
     }

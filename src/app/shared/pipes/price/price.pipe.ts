@@ -1,4 +1,3 @@
-// price.pipe.ts
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
@@ -7,7 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class PriceEuroPipe implements PipeTransform {
     transform(value: number | null | undefined): string {
-        if (value == null || isNaN(value)) return ''; // <- gestion null/undefined/NaN
+        if (value == null || isNaN(value)) return '';
         return value.toFixed(2) + ' €';
     }
 }
