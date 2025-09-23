@@ -2,7 +2,7 @@
     "version": 2,
     "builds": [
         {
-            "src": "dist/subscription-planner/browser/**",
+            "src": "dist/subscription-planner/**",
             "use": "@vercel/static"
         }
     ],
