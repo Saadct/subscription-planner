@@ -12,22 +12,24 @@ import { AuthService } from '../../../features/auth/services/auth.service';
         <h1 class="text-2xl font-bold">Subscription App</h1>
         <nav>
           <ul class="flex space-x-4">
-            @if (currentUser()) {
-              @if (currentUser()?.role != 'admin') {
-                <li><a routerLink="/subscriptions" class="hover:text-blue-200">Abonnements</a></li>
-                <li><a routerLink="/subscriptions/dashboard" class="hover:text-blue-200">Dashboard</a></li>
-
-              }
-              @if (currentUser()?.role === 'admin') {
-                <li><a routerLink="/admin" class="hover:text-blue-200">User</a></li>
-                <li><a routerLink="/admin/category" class="hover:text-blue-200">Category</a></li>
-                <li><a routerLink="/admin/dashboard" class="hover:text-blue-200">Dashboard</a></li>
-
-              }
-              <li><button (click)="logout()" class="hover:text-blue-200">Logout</button></li>
+            @if (auth.loading()) {
+              <!-- Rien ou skeleton -->
             } @else {
-              <li><a routerLink="/auth/login" class="hover:text-blue-200">Login</a></li>
-              <li><a routerLink="/auth/register" class="hover:text-blue-200">Register</a></li>
+              @if (auth.currentUser(); as user) {
+                @if (user.role !== 'admin') {
+                  <li><a routerLink="/subscriptions">Abonnements</a></li>
+                  <li><a routerLink="/subscriptions/dashboard">Dashboard</a></li>
+                }
+                @if (user.role === 'admin') {
+                  <li><a routerLink="/admin">User</a></li>
+                  <li><a routerLink="/admin/category">Category</a></li>
+                  <li><a routerLink="/admin/dashboard">Dashboard</a></li>
+                }
+                <li><button (click)="logout()">Logout</button></li>
+              } @else {
+                <li><a routerLink="/auth/login">Login</a></li>
+                <li><a routerLink="/auth/register">Register</a></li>
+              }
             }
           </ul>
         </nav>
@@ -36,11 +38,8 @@ import { AuthService } from '../../../features/auth/services/auth.service';
   `,
 })
 export class HeaderComponent {
-  private auth = inject(AuthService);
+  auth = inject(AuthService);
   private router = inject(Router);
-
-  // getCurrentUser() du service renvoie User | null ; on l'utilise dans le template
-  currentUser = this.auth.getCurrentUser.bind(this.auth);
 
   async logout() {
     await this.auth.logout();

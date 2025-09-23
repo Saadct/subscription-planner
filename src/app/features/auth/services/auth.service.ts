@@ -24,31 +24,28 @@ export class AuthService {
         },
     ]);
 
-    private currentUser = signal<User | null>(null);
+    currentUser = signal<User | null>(null);
     private token = signal<string | null>(null);
+    loading = signal(true);
 
 
 
     constructor() {
         const userId = localStorage.getItem('currentUserId');
         if (userId) {
-            this.initCurrentUser(userId); // Appel d'une méthode async
+            this.initCurrentUser(userId);
+        } else {
+            this.loading.set(false);
         }
 
-        // Déclaré dans ton service ou ton composant
         effect(() => {
             const user = this.currentUser();
             if (user) {
-                // Sauvegarde l'ID de l'utilisateur connecté
                 localStorage.setItem("currentUserId", user.id);
-                console.log(`✅ LocalStorage mis à jour: currentUserId = ${user.id}`);
             } else {
-                // Si l'utilisateur se déconnecte
                 localStorage.removeItem("currentUserId");
-                console.log(`ℹ️ LocalStorage vidé: aucun utilisateur connecté`);
             }
         });
-
     }
 
     private async initCurrentUser(userId: string) {
@@ -56,6 +53,7 @@ export class AuthService {
         if (user) {
             this.currentUser.set(user);
         }
+        this.loading.set(false);
     }
 
     // Simuler un délai réseau
