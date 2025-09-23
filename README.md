@@ -1,59 +1,117 @@
-# SubscriptionPlanner
+# Subscription Planner
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.2.1.
+**Lien de déploiement :** [subscription-planner.vercel.app](https://subscription-planner.vercel.app)
 
-## Development server
+**Description :**
+Subscription Planner est une application Angular moderne pour suivre les prélèvements et abonnements de manière simple et efficace. Elle offre un calendrier interactif, un dashboard analytique et une gestion complète côté utilisateur et administrateur.
 
-To start a local development server, run:
+* **Côté utilisateur :**
+
+  * Suivi des prélèvements et abonnements.
+  * Visualisation dans un calendrier.
+  * Dashboard avec statistiques et analyses personnalisées.
+
+* **Côté administrateur :**
+
+  * Gestion des utilisateurs.
+  * Gestion des catégories d’abonnements.
+  * Dashboard global avec toutes les données d’abonnements.
+
+---
+
+## 🔑 Accès de test
+
+Pour tester l’application, voici les utilisateurs disponibles :
+
+| Email                                         | Mot de passe | Rôle  |
+| --------------------------------------------- | ------------ | ----- |
+| [admin@example.com](mailto:admin@example.com) | admin123     | Admin |
+| [user@example.com](mailto:user@example.com)   | user123      | User  |
+
+---
+
+## ⚙️ Fonctionnalités principales
+
+* Authentification et gestion des rôles (User / Admin).
+* Calendrier interactif pour suivre les abonnements.
+* Dashboard utilisateur avec analyse des dépenses et suivi des prélèvements.
+* Dashboard administrateur avec vue globale sur tous les utilisateurs et abonnements.
+* Gestion des catégories d’abonnements côté admin.
+* Interface responsive et moderne.
+
+---
+
+## 💻 Installation locale
+
+1. Cloner le dépôt :
+
+```bash
+git clone <ton-repo-github>
+cd subscription-planner
+```
+
+2. Installer les dépendances :
+
+```bash
+npm install
+```
+
+3. Lancer le projet en mode développement :
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+4. Ouvrir le navigateur sur :
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```
+http://localhost:4200
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
+
+## 🏗️ Build pour production
+
+Pour générer le build de production :
 
 ```bash
-ng generate --help
+ng build --configuration production
 ```
 
-## Building
+Le dossier `dist/subscription-planner` contient le build prêt à être déployé.
 
-To build the project run:
+---
+
+## 🚀 Déploiement
+
+L’application est déployée sur Vercel :
+[https://subscription-planner.vercel.app](https://subscription-planner.vercel.app)
+
+* Si vous souhaitez redéployer vous-même :
 
 ```bash
-ng build
+npm install -g vercel
+vercel
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+ou configurez le projet pour un déploiement automatique via GitHub.
 
-## Running unit tests
+---
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## 📁 Structure du projet
 
-```bash
-ng test
-```
+* `src/app/features/auth` : Authentification et gestion des utilisateurs.
+* `src/app/features/subscriptions` : Gestion des abonnements et calendrier.
+* `src/app/features/admin` : Gestion admin, dashboard global, utilisateurs et catégories.
+* `src/app/shared/components` : Composants réutilisables (header, navbar…).
+* `src/app/core/guards` : Guards pour la protection des routes (auth / admin).
+* `src/app/core/services` : Services Angular pour l’authentification et les données.
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+## 📝 Notes
 
-```bash
-ng e2e
-```
+* Les mots de passe sont stockés en clair dans ce projet pour simplification des tests.
+* En production, il est **recommandé de hasher les mots de passe** et de sécuriser le backend avec un vrai serveur et base de données.
+* L’application utilise Angular 20+ et des **signals** pour la réactivité.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
