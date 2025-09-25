@@ -10,7 +10,7 @@ export class SubscriptionService {
             id: '1',
             userId: '1',
             name: 'Netflix',
-            categoryId: 1,
+            categoryId: '1',
             price: 15.99,
             paymentDate: new Date('2025-09-25'),
             createdAt: new Date('2025-09-20'),
@@ -21,7 +21,7 @@ export class SubscriptionService {
             id: '2',
             userId: '1',
             name: 'Basic Fit',
-            categoryId: 1,
+            categoryId: '1',
             price: 35.99,
             paymentDate: new Date('2025-09-25'),
             createdAt: new Date('2025-09-26'),
@@ -32,7 +32,7 @@ export class SubscriptionService {
             id: '3',
             userId: '1',
             name: 'Piscine',
-            categoryId: 1,
+            categoryId: '1',
             price: 25.99,
             paymentDate: new Date('2025-09-25'),
             createdAt: new Date('2025-09-20'),
@@ -43,7 +43,7 @@ export class SubscriptionService {
             id: '4',
             userId: '2',
             name: 'Spotify',
-            categoryId: 2,
+            categoryId: '2',
             price: 9.99,
             paymentDate: new Date('2025-09-21'),
             createdAt: new Date('2025-09-19'),
@@ -112,6 +112,34 @@ export class SubscriptionService {
         this.subscriptions.update(subs => {
             const initialLength = subs.length;
             const filtered = subs.filter(sub => sub.id !== id);
+            deleted = filtered.length < initialLength;
+            return filtered;
+        });
+
+        return deleted;
+    }
+
+    async deleteSubscriptionByUserId(userId: string): Promise<boolean> {
+        await this.delay(250);
+
+        let deleted = false;
+        this.subscriptions.update(subs => {
+            const initialLength = subs.length;
+            const filtered = subs.filter(sub => sub.userId !== userId);
+            deleted = filtered.length < initialLength;
+            return filtered;
+        });
+
+        return deleted;
+    }
+
+    async deleteSubscriptionByCategoryId(categoryId: string): Promise<boolean> {
+        await this.delay(250);
+
+        let deleted = false;
+        this.subscriptions.update(subs => {
+            const initialLength = subs.length;
+            const filtered = subs.filter(sub => sub.categoryId !== categoryId);
             deleted = filtered.length < initialLength;
             return filtered;
         });

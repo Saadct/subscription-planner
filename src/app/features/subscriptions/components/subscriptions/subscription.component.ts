@@ -46,8 +46,7 @@ export class SubscriptionCalendarComponent implements OnInit {
   async updateSubscription(data: UpdateSubscription) {
     await this.subscriptionService.updateSubscription(data.id, {
       ...data,
-      paymentDate: new Date(data.paymentDate),
-      userId: this.userId
+      paymentDate: new Date(data.paymentDate)
     });
     this.closeEditDrawer();
   }

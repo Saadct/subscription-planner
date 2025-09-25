@@ -83,7 +83,7 @@ export class SubscriptionEditComponent implements OnChanges, OnInit {
   @Input() open = false;
   @Input() initialData!: Subscription | null;
   @Output() update = new EventEmitter<UpdateSubscription>();
-  @Output() close = new EventEmitter<void>();
+  @Output() closeDrawer = new EventEmitter<void>();
 
   subscriptionForm!: FormGroup;
   categories: Category[] = [];
@@ -122,7 +122,7 @@ export class SubscriptionEditComponent implements OnChanges, OnInit {
 
   onClose() {
     this.resetForm();
-    this.close.emit();
+    this.closeDrawer.emit();
   }
 
   onSave() {
@@ -135,13 +135,13 @@ export class SubscriptionEditComponent implements OnChanges, OnInit {
       name: formValue.name,
       price: +formValue.price,
       paymentDate: new Date(formValue.paymentDate),
-      categoryId: +formValue.categoryId,
+      categoryId: formValue.categoryId,
       color: formValue.color,
       active: formValue.active
     };
 
     this.update.emit(updatedSubscription);
-    this.close.emit();
+    this.closeDrawer.emit();
   }
 
   private resetForm() {

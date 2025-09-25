@@ -90,6 +90,7 @@ export class CategoryEditComponent implements OnChanges {
 
   @Output() closeEvent = new EventEmitter<void>(); // ✅ nom sûr, pas d'alias
   @Output() save = new EventEmitter<Category>();
+  @Output() closeDrawner = new EventEmitter<void>(); // ✅ nom sûr, pas d'alias
 
   editableCategory: Category = { id: '', label: '', active: true };
 
@@ -100,7 +101,7 @@ export class CategoryEditComponent implements OnChanges {
   }
 
   onClose() {
-    this.closeEvent.emit();
+    this.closeDrawner.emit();
   }
 
   onSave() {

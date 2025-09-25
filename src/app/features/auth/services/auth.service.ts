@@ -1,32 +1,22 @@
-import { effect, Injectable, signal } from '@angular/core';
+import { effect, inject, Injectable, signal } from '@angular/core';
 import { User, LoginRequest, RegisterRequest } from '../models/user.model';
+import { SubscriptionService } from '../../subscriptions/services/subscription.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class AuthService {
+    private subscriptionService = inject(SubscriptionService);
+
     private users = signal<User[]>([
-        {
-            id: '1',
-            email: 'admin@example.com',
-            name: 'admin example',
-            password: 'admin123', // En production, ce serait hashé
-            role: 'admin',
-            createdAt: new Date('2024-01-01'),
-        },
-        {
-            id: '2',
-            email: 'user@example.com',
-            name: 'user example',
-            password: 'user123',
-            role: 'user',
-            createdAt: new Date('2024-01-02'),
-        },
+        { id: '1', email: 'admin@example.com', name: 'admin example', password: 'admin123', role: 'admin', createdAt: new Date('2024-01-01') },
+        { id: '2', email: 'user@example.com', name: 'user example', password: 'user123', role: 'user', createdAt: new Date('2024-01-02') },
     ]);
 
     currentUser = signal<User | null>(null);
     private token = signal<string | null>(null);
     loading = signal(true);
+
 
     constructor() {
         const userId = localStorage.getItem('currentUserId');
@@ -44,7 +34,20 @@ export class AuthService {
                 localStorage.removeItem('currentUserId');
             }
         });
+
+        let previousUserIds = this.users().map(u => u.id);
+        effect(() => {
+            const currentUserIds = this.users().map(u => u.id);
+            const deletedUserIds = previousUserIds.filter(id => !currentUserIds.includes(id));
+
+            deletedUserIds.forEach(id => {
+                this.subscriptionService.deleteSubscriptionByUserId(id);
+            });
+
+            previousUserIds = currentUserIds;
+        });
     }
+
 
     private async initCurrentUser(userId: string) {
         const user = await this.getUserById(userId);
@@ -153,7 +156,10 @@ export class AuthService {
             return { success: false, error: 'Utilisateur non trouvé' };
         }
 
+        // Supprime l'utilisateur
         this.users.set(users.filter(u => u.id !== userId));
+
+        // L'effect déclenchera automatiquement la suppression des subscriptions
         return { success: true };
     }
 }

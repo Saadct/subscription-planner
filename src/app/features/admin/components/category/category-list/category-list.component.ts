@@ -67,7 +67,7 @@ import { CategoryEditComponent } from '../category-edit/category-edit.component'
     <app-category-edit
       [open]="drawerOpen"
       [category]="selectedCategory"
-      (close)="closeDrawer()"
+      (closeDrawner)="closeDrawer()"
       (save)="updateCategory($event)"
     ></app-category-edit>
   `,

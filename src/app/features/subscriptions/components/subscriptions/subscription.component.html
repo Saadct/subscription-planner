@@ -83,9 +83,9 @@
 </div>
 
 <!-- Drawers séparés -->
-<app-subscription-add [open]="addDrawerOpen" (close)="closeAddDrawer()" (save)="saveNewSubscription($event)">
+<app-subscription-add [open]="addDrawerOpen" (closeDrawer)="closeAddDrawer()" (save)="saveNewSubscription($event)">
 </app-subscription-add>
 
-<app-subscription-edit [open]="editDrawerOpen" [initialData]="selectedSubscription" (close)="closeEditDrawer()"
+<app-subscription-edit [open]="editDrawerOpen" [initialData]="selectedSubscription" (closeDrawer)="closeEditDrawer()"
     (update)="updateSubscription($event)">
 </app-subscription-edit>

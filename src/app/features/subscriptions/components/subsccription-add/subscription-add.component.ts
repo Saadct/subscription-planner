@@ -109,7 +109,7 @@ export class SubscriptionAddComponent implements OnInit {
   @Input() open = false;
   @Output() closeDrawer = new EventEmitter<void>();
   @Output() save = new EventEmitter<AddSubscription>();
-  @Output() close = new EventEmitter<void>();
+  @Output() closeDrawner = new EventEmitter<void>();
 
   subscriptionForm!: FormGroup;
   categories: Category[] = [];
@@ -132,14 +132,14 @@ export class SubscriptionAddComponent implements OnInit {
 
   onClose() {
     this.resetForm();
-    this.close.emit();
+    this.closeDrawner.emit();
   }
 
   onSave() {
     if (!this.subscriptionForm.valid) return;
     this.save.emit(this.subscriptionForm.value);
     this.resetForm();
-    this.close.emit();
+    this.closeDrawner.emit();
   }
 
   private resetForm() {
