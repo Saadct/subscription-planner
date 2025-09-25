@@ -118,9 +118,6 @@ export class AuthService {
 
         this.users.update(users => [...users, newUser]);
         this.currentUser.set(newUser);
-
-        console.log('✅ Service: Inscription réussie pour:', newUser.email);
-        console.log('🔄 Service: Signal currentUser mis à jour:', this.currentUser());
         return { success: true, user: newUser };
     }
 
@@ -129,9 +126,6 @@ export class AuthService {
         console.log('🔄 Service: Déconnexion...');
         await this.delay(200);
         this.currentUser.set(null);
-        // localStorage.removeItem("currentUserId")
-        console.log('✅ Service: Déconnexion réussie');
-        console.log('🔄 Service: Signal currentUser mis à jour:', this.currentUser());
     }
 
     // GET - Vérifier si l'utilisateur est connecté

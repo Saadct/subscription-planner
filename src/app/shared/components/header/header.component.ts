@@ -43,6 +43,8 @@ export class HeaderComponent {
 
   async logout() {
     await this.auth.logout();
-    await this.router.navigate(['/auth/login']);
+    setTimeout(() => {
+      this.router.navigate(['/auth/login'], { replaceUrl: true });
+    }, 0);
   }
 }
