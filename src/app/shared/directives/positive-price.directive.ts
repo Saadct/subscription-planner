@@ -1,11 +1,11 @@
-import { Directive, HostListener } from '@angular/core';
+import { Directive, HostListener, inject } from '@angular/core';
 import { NgControl } from '@angular/forms';
 
 @Directive({
     selector: '[appPositivePrice]'
 })
 export class PositivePriceDirective {
-    constructor(private ngControl: NgControl) { }
+    private ngControl = inject(NgControl); // injection via inject()
 
     @HostListener('input', ['$event'])
     onInput(event: Event) {

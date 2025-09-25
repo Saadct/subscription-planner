@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CategoryService } from '../../services/category.service';
 import { Category } from '../../models/category.model';
 import { Subscription } from '../../../subscriptions/models/subscription.model';
@@ -34,10 +34,8 @@ export class DashboardAdminComponent implements OnInit {
   costByCategoryOptions: EChartsOption = {};
   monthlyOptions: EChartsOption = {};
 
-  constructor(
-    private subscriptionService: SubscriptionService,
-    private categoryService: CategoryService
-  ) { }
+  private subscriptionService = inject(SubscriptionService);
+  private categoryService = inject(CategoryService);
 
   async ngOnInit() {
     this.subscriptions = await this.subscriptionService.getAllSubscriptions();
@@ -51,7 +49,7 @@ export class DashboardAdminComponent implements OnInit {
     this.totalCost = this.subscriptions.reduce((acc, sub) => acc + sub.price, 0);
 
     // --- Abonnements par catégorie
-    const counts: { [key: string]: number } = {};
+    const counts: Record<string, number> = {};
     this.subscriptions.forEach(sub => {
       const category = this.categories.find(c => c.id === sub.categoryId.toString());
       if (category) counts[category.label] = (counts[category.label] || 0) + 1;
@@ -74,7 +72,7 @@ export class DashboardAdminComponent implements OnInit {
     };
 
     // --- Coût par catégorie
-    const costs: { [key: string]: number } = {};
+    const costs: Record<string, number> = {};
     this.subscriptions.forEach(sub => {
       const category = this.categories.find(c => c.id === sub.categoryId.toString());
       if (category) costs[category.label] = (costs[category.label] || 0) + sub.price;
@@ -88,17 +86,16 @@ export class DashboardAdminComponent implements OnInit {
       series: [
         {
           name: 'Coût',
-          type: 'pie',             // ✅ utiliser 'pie'
-          radius: ['40%', '70%'],  // pour doughnut
+          type: 'pie',
+          radius: ['40%', '70%'], // doughnut
           data: costLabels.map((label, i) => ({ value: costData[i], name: label })),
           emphasis: { itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0,0,0,0.5)' } }
         }
       ]
     };
 
-
     // --- Timeline par mois
-    const monthlyCounts: { [key: string]: number } = {};
+    const monthlyCounts: Record<string, number> = {};
     this.subscriptions.forEach(sub => {
       const month = sub.createdAt.toLocaleString('default', { month: 'short', year: 'numeric' });
       monthlyCounts[month] = (monthlyCounts[month] || 0) + 1;

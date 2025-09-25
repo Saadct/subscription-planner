@@ -1,4 +1,4 @@
-import { Component, computed, OnInit, Signal } from '@angular/core';
+import { Component, computed, inject, OnInit, Signal } from '@angular/core';
 import { Subscription } from '../../../subscriptions/models/subscription.model';
 import { SubscriptionService } from '../../../subscriptions/services/subscription.service';
 import { CommonModule } from '@angular/common';
@@ -34,13 +34,11 @@ export class DashboardUserComponent implements OnInit {
     costByCategoryOptions: EChartsOption = {};
     monthlyOptions: EChartsOption = {};
 
-    constructor(
-        private subscriptionService: SubscriptionService,
-        private categoryService: CategoryService
-    ) { }
+    private subscriptionService = inject(SubscriptionService);
+    private categoryService = inject(CategoryService);
 
     async ngOnInit() {
-        const userId = localStorage.getItem("currentUserId") || "";
+        const userId = localStorage.getItem('currentUserId') || '';
         this.subscriptions = this.subscriptionService.getSubscriptionsByUserId(userId);
         this.categories = await this.categoryService.getAllCategories();
 
@@ -58,7 +56,7 @@ export class DashboardUserComponent implements OnInit {
         this.totalSubscriptions = subs.length;
 
         // --- Abonnements par catégorie
-        const counts: { [key: string]: number } = {};
+        const counts: Record<string, number> = {};
         subs.forEach(sub => {
             const category = this.categories.find(c => c.id === sub.categoryId.toString());
             if (category) counts[category.label] = (counts[category.label] || 0) + 1;
@@ -81,7 +79,7 @@ export class DashboardUserComponent implements OnInit {
         };
 
         // --- Coût par catégorie
-        const costs: { [key: string]: number } = {};
+        const costs: Record<string, number> = {};
         subs.forEach(sub => {
             const category = this.categories.find(c => c.id === sub.categoryId.toString());
             if (category) costs[category.label] = (costs[category.label] || 0) + sub.price;
@@ -104,7 +102,7 @@ export class DashboardUserComponent implements OnInit {
         };
 
         // --- Timeline par mois
-        const monthlyCounts: { [key: string]: number } = {};
+        const monthlyCounts: Record<string, number> = {};
         subs.forEach(sub => {
             const month = sub.createdAt.toLocaleString('default', { month: 'short', year: 'numeric' });
             monthlyCounts[month] = (monthlyCounts[month] || 0) + 1;

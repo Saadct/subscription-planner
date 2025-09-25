@@ -4,7 +4,7 @@ import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { PositivePriceDirective } from './positive-price.directive';
 
 @Component({
-    template: `<input type="number" [formControl]="control" appPositivePrice />`,
+    template: '<input type="number" [formControl]="control" appPositivePrice />',
     standalone: true,
     imports: [ReactiveFormsModule, PositivePriceDirective]
 })

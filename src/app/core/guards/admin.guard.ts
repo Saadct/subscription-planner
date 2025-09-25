@@ -2,19 +2,19 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../../features/auth/services/auth.service';
 
-export const adminGuard: CanActivateFn = async (route, state) => {
+export const adminGuard: CanActivateFn = async () => {
     const authService = inject(AuthService);
     const router = inject(Router);
 
-    const user = await authService.getCurrentUser(); // async
+    const user = await authService.getCurrentUser();
 
     if (user && user.role === 'admin') {
-        return true; // ✅ Accès admin autorisé
+        return true;
+    } else if (user) {
+        router.navigate(['/subscriptions']);
+        return false;
     } else {
-        console.log('User from adminGuard:', user);
-
-        console.log("crash")
-        router.navigate(['/subscriptions']); // 🔄 Redirection si pas admin
+        router.navigate(['/auth/login']);
         return false;
     }
 };

@@ -1,10 +1,10 @@
-import { Component, signal, OnInit, computed } from '@angular/core';
+import { Component, signal, OnInit, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AddSubscription, Subscription, UpdateSubscription } from '../../models/subscription.model';
 import { SubscriptionService } from '../../services/subscription.service';
 import { SubscriptionAddComponent } from '../subsccription-add/subscription-add.component';
 import { SubscriptionEditComponent } from '../subscription-edit/subscription-edit.component';
-import { PriceEuroPipe } from "../../../../shared/pipes/price/price.pipe";
+import { PriceEuroPipe } from '../../../../shared/pipes/price/price.pipe';
 
 @Component({
   selector: 'app-subscription-calendar',
@@ -14,11 +14,13 @@ import { PriceEuroPipe } from "../../../../shared/pipes/price/price.pipe";
   styleUrls: ['./subscription.component.css'],
 })
 export class SubscriptionCalendarComponent implements OnInit {
+  private subscriptionService = inject(SubscriptionService);
+
   subscriptions = computed(() =>
     this.subscriptionService.getSubscriptionsByUserId(this.userId)()
   );
   loading = signal(true);
-  userId: string = "";
+  userId = '';
 
   addDrawerOpen = false;
   editDrawerOpen = false;
@@ -28,10 +30,8 @@ export class SubscriptionCalendarComponent implements OnInit {
   year = signal(new Date().getFullYear());
   weekDays = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 
-  constructor(private subscriptionService: SubscriptionService) { }
-
   async ngOnInit() {
-    this.userId = localStorage.getItem("currentUserId") || "";
+    this.userId = localStorage.getItem('currentUserId') || '';
   }
 
   async saveNewSubscription(data: AddSubscription) {
@@ -54,7 +54,7 @@ export class SubscriptionCalendarComponent implements OnInit {
 
   async confirmDelete(subscription: Subscription, event: Event) {
     event.stopPropagation();
-    const confirmed = confirm(`Voulez-vous vraiment supprimer l'abonnement "${subscription.name}" ?`);
+    const confirmed = confirm(`Voulez-vous vraiment supprimer l'abonnement '${subscription.name}' ?`);
     if (!confirmed) return;
 
     await this.subscriptionService.deleteSubscription(subscription.id);

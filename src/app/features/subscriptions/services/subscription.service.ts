@@ -6,10 +6,9 @@ import { Subscription, AddSubscription } from '../models/subscription.model';
 })
 export class SubscriptionService {
     private subscriptions = signal<Subscription[]>([
-
         {
-            id: "1",
-            userId: "1",
+            id: '1',
+            userId: '1',
             name: 'Netflix',
             categoryId: 1,
             price: 15.99,
@@ -19,8 +18,8 @@ export class SubscriptionService {
             active: true
         },
         {
-            id: "2",
-            userId: "1",
+            id: '2',
+            userId: '1',
             name: 'Basic Fit',
             categoryId: 1,
             price: 35.99,
@@ -30,8 +29,8 @@ export class SubscriptionService {
             active: true
         },
         {
-            id: "3",
-            userId: "1",
+            id: '3',
+            userId: '1',
             name: 'Piscine',
             categoryId: 1,
             price: 25.99,
@@ -41,8 +40,8 @@ export class SubscriptionService {
             active: true
         },
         {
-            id: "4",
-            userId: "2",
+            id: '4',
+            userId: '2',
             name: 'Spotify',
             categoryId: 2,
             price: 9.99,
@@ -77,7 +76,6 @@ export class SubscriptionService {
 
     async createSubscription(data: AddSubscription): Promise<Subscription> {
         await this.delay(400);
-        console.log("service", data);
         const newSub: Subscription = {
             id: Date.now().toString(),
             ...data,
@@ -86,7 +84,6 @@ export class SubscriptionService {
         };
 
         this.subscriptions.update(subs => [...subs, newSub]);
-        console.log(this.subscriptions);
 
         return newSub;
     }

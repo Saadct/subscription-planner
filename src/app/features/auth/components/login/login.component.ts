@@ -139,7 +139,7 @@ export class LoginComponent {
     const field = this.loginForm.get(fieldName);
     if (field?.errors) {
       if (field.errors['required']) return 'Ce champ est requis';
-      if (field.errors['email']) return "Format d'email invalide";
+      if (field.errors['email']) return 'Format du email invalide';
       if (field.errors['minlength'])
         return `Minimum ${field.errors['minlength'].requiredLength} caractères`;
     }

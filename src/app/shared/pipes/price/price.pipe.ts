@@ -6,7 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class PriceEuroPipe implements PipeTransform {
     transform(value: number | null | undefined): string {
-        if (value == null || isNaN(value)) return '';
+        if (value === null || value === undefined || isNaN(value)) return '';
         return value.toFixed(2) + ' €';
     }
 }
