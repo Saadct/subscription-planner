@@ -82,8 +82,8 @@ import { positivePriceValidator } from '../../../../shared/validators/price.vali
 export class SubscriptionEditComponent implements OnChanges, OnInit {
   @Input() open = false;
   @Input() initialData!: Subscription | null;
-  @Output() closeDrawer = new EventEmitter<void>();
   @Output() update = new EventEmitter<UpdateSubscription>();
+  @Output() close = new EventEmitter<void>();
 
   subscriptionForm!: FormGroup;
   categories: Category[] = [];
@@ -122,7 +122,7 @@ export class SubscriptionEditComponent implements OnChanges, OnInit {
 
   onClose() {
     this.resetForm();
-    this.closeDrawer.emit();
+    this.close.emit();
   }
 
   onSave() {
@@ -141,7 +141,7 @@ export class SubscriptionEditComponent implements OnChanges, OnInit {
     };
 
     this.update.emit(updatedSubscription);
-    this.closeDrawer.emit();
+    this.close.emit();
   }
 
   private resetForm() {
